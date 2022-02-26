@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstring>
 
-void parseCommandLineArgs(int argc, char* argv[], char** srcPath, char** scanPath, char** shellPath);
+void parseCommandLineArgs(int argc, char* argv[], char** srcPath, char** scanPath, char** outputPath);
+void showHelp();
 
 #endif //SPACELINK_MAIN_H
