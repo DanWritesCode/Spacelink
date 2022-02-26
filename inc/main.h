@@ -1,0 +1,13 @@
+//
+// Created by Daniel on 2/26/2022.
+//
+
+#ifndef SPACELINK_MAIN_H
+#define SPACELINK_MAIN_H
+
+#include <iostream>
+#include <cstring>
+
+void parseCommandLineArgs(int argc, char* argv[], char** srcPath, char** scanPath, char** shellPath);
+
+#endif //SPACELINK_MAIN_H
