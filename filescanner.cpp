@@ -47,8 +47,6 @@ unordered_map<string, pair<string, uintmax_t>> FileScanner::Scan() {
                     // check and compare the inode of this file to see if it matches the inode from the file in the source directory
                     // if it doesn't match, it could be hard-linked to save on space since the file is likely identical
                     if(file->second.second != 0 && inode != file->second.second) {
-                        cout << "Discrepancy: " << entry.path().string() << " vs " << file->first << " inodes: " << inode << " vs " << file->second.second << endl;
-
                         // Add to duplicates list
                         auto p = pair<string, uintmax_t>(entry.path().string(), entry.file_size());
                         duplicates.insert(pair<string, pair<string, uintmax_t>>(this->source + "/" + file->first, p));
@@ -76,16 +74,21 @@ ino_t FileScanner::getInode(const char *path) {
 }
 
 
-// Prints the commands to remove all duplicate files and instead use hardlinks
+// Writes the commands (to fileName) that remove all duplicate files and switch to using hardlinks
 // Returns the total amount of bytes that could be saved
 uintmax_t FileScanner::PrintShellScript(const unordered_map<string, pair<string, uintmax_t>>& duplicates, const string& fileName) {
+    ofstream MyFile(fileName);
+
     uintmax_t totalSaved = 0;
     for(const auto &entry : duplicates) {
-        printf("rm %s\n", entry.second.first.c_str());
-        printf("ln '%s' '%s'\n", entry.first.c_str(), entry.second.first.c_str());
+        MyFile << "rm '" << entry.second.first << "'" << endl;
+        MyFile << "ln '" << entry.first << "' '" << entry.second.first << "'" << endl;
 
         totalSaved += entry.second.second;
     }
+
+    // Close the file
+    MyFile.close();
 
     return totalSaved;
 }

@@ -6,6 +6,7 @@
 #define SPACELINK_FILESCANNER_H
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <filesystem>
 #include <sys/types.h>

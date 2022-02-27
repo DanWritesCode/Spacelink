@@ -20,7 +20,9 @@ int main(int argc, char* argv[]) {
     FileScanner fs = FileScanner(string(srcPath), string(scanPath));
     auto duplicates = fs.Scan();
     auto spaceSaved = FileScanner::PrintShellScript(duplicates, outputPath);
-    printf("Total Potential Space Savings: %.2f GB\n", (double) spaceSaved * 0.000000001);
+
+    printf("Written duplicate-removal shell script to '%s'\n", outputPath);
+    printf("Total Potential Space Savings: %.2f GB\n", (double) spaceSaved * BYTES_TO_GB);
 
     return 0;
 }
@@ -44,7 +46,7 @@ void parseCommandLineArgs(int argc, char* argv[], char** srcPath, char** scanPat
 
 // show the help menu
 void showHelp() {
-    printf("Usage: spacelink --source <path> --scan <path> --output <file name>\n");
+    printf("Usage: spacelink --source <path> --scan <path> --output <file name>\n\n");
     printf("Locate duplicate files in SCAN by checking inodes of files with the same size located in SOURCE\n");
     printf("Outputs a shell script to file OUTPUT containing commands to run that can eliminate all duplicate files using hardlinks\n");
 }

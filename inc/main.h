@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cstring>
 
+#define BYTES_TO_GB 0.000000001
+
 void parseCommandLineArgs(int argc, char* argv[], char** srcPath, char** scanPath, char** outputPath);
 void showHelp();
 
