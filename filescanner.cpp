@@ -13,11 +13,12 @@ FileScanner::FileScanner(string source, string target) {
 unordered_map<string, pair<string, uintmax_t>> FileScanner::Scan() {
     // 1) Map all files in "source" directory
     // In the map, add full path (key), Pair<fileSize, inode> (value)
-    unordered_map<string, pair<uintmax_t, ino_t>> files;
+    unordered_map<string, MyFile> files;
     for (const auto & entry : filesystem::recursive_directory_iterator(source)) {
         if(!entry.is_directory())
-            files.insert(pair<string, pair<uintmax_t, ino_t>>(entry.path().filename().string(),
-                pair<uintmax_t, ino_t>(entry.file_size(), getInode(entry.path().string().c_str()))));
+            files.insert(pair<string, MyFile>(entry.path().filename().string(),MyFile {
+                entry.path(), entry.file_size(), getInode(entry.path().string().c_str())
+            }));
     }
 
     // 1.5) Create a map to store our results
@@ -43,13 +44,13 @@ unordered_map<string, pair<string, uintmax_t>> FileScanner::Scan() {
             // Iterate over every file that may have the same name in the "source" directory
             for (; file!=files.end(); ++file)
                 // Check the file size to make sure it matches
-                if(file->second.first == compareSize) {
+                if(file->second.fileSize == compareSize) {
                     // check and compare the inode of this file to see if it matches the inode from the file in the source directory
                     // if it doesn't match, it could be hard-linked to save on space since the file is likely identical
-                    if(file->second.second != 0 && inode != file->second.second) {
+                    if(file->second.fileInode != 0 && inode != file->second.fileInode) {
                         // Add to duplicates list
                         auto p = pair<string, uintmax_t>(entry.path().string(), entry.file_size());
-                        duplicates.insert(pair<string, pair<string, uintmax_t>>(this->source + "/" + file->first, p));
+                        duplicates.insert(pair<string, pair<string, uintmax_t>>(file->second.originalFilePath.u8string(), p));
                     }
 
                     // If we found a file that matched the name & size, we can stop looking

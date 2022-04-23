@@ -16,6 +16,12 @@
 
 using namespace std;
 
+struct MyFile {
+    filesystem::path originalFilePath;
+    uintmax_t fileSize;
+    ino_t fileInode;
+};
+
 class FileScanner {
 private:
     string source;
